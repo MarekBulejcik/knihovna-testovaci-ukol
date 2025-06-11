@@ -42,8 +42,10 @@ $pageTitle = $book ? $book['title'] : 'Kniha nenalezena';
         <?php endif; ?>
 
         <br>
-        <a href="index.php">Zpět na katalog</a>
-
+        <div class="actions no-print" style="margin-top: 2rem; text-align: right;">
+            <a href="index.php">Zpět na katalog</a>
+            <button onclick="window.print()" style="margin-left: 1rem;">Tisk</button>
+        </div>
     </div>
 </body>
 </html>

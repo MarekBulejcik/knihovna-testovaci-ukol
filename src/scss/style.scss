@@ -1,0 +1,175 @@
+// IMPORT FONTU Z GOOGLE FONTS
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+// PROMĚNNÉ BARVY A TÉMA STRÁNKY
+$primary-color: #2c3e50;
+$secondary-color: #3498db;
+$background-color: #ecf0f1;
+$container-bg: #ffffff;
+$font-family: "Quicksand", sans-serif;
+$danger-color: #e74c3c;
+$success-color: #2ecc71;
+
+// HLAVNÍ STYLY
+* {
+  font-family: $font-family;
+  font-style: normal;
+  font-optical-sizing: auto;
+}
+
+body {
+  background-color: $background-color;
+  color: $primary-color;
+  line-height: 1.6;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: $container-bg;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+a {
+  color: $secondary-color;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #bdc3c7;
+  margin: 2rem 0;
+}
+
+h1,
+h2,
+h3 {
+  color: $primary-color;
+}
+
+// TABULKA
+.book-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  th,
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #bdc3c7;
+    text-align: left;
+  }
+  thead th {
+    border-top: 1px solid #bdc3c7;
+    font-weight: 600;
+  }
+}
+
+// FORMULÁŘ
+.form-group {
+  margin-bottom: 1rem;
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  input[type="text"],
+  input[type="number"],
+  input[type="password"],
+  textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+}
+
+input {
+  padding: 12px 20px;
+}
+
+button {
+  background: $secondary-color;
+  color: #fff;
+  border: 0;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+// OZNÁMENÍ / ZPRÁVY / CHYBY
+.error,
+.success {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  border: 1px solid;
+}
+.error {
+  color: darken($danger-color, 10%);
+  background-color: lighten($danger-color, 35%);
+  border-color: darken($danger-color, 10%);
+}
+.success {
+  color: darken($success-color, 10%);
+  background-color: lighten($success-color, 45%);
+  border-color: darken($success-color, 10%);
+}
+
+// CSS STYL PRO TISK
+@media print {
+  * {
+    font-family: "Times New Roman", Times, serif;
+  }
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  .container {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  // SKRYTÍ VŠECH ELEMENTŮ S NO-PRINT CLASSOU PRO TISKOVÝ VZHLED
+  .no-print {
+    display: none;
+  }
+
+  .book-table a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h1 {
+    font-size: 18pt;
+    margin-bottom: 20px;
+  }
+
+  .book-table {
+    width: 100%;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    border-collapse: collapse;
+    margin-top: 1rem;
+
+    thead th {
+      border-bottom: 1px solid #000;
+    }
+  }
+}

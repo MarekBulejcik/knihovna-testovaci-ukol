@@ -19,5 +19,75 @@
     "publication_year": 1855,
     "annotation": "Vzpomínková próza zachycující autorčiny dětské vzpomínky.",
     "rating": 4
+  },
+  {
+    "title": "Saturnin",
+    "author": "Zdeněk Jirotka",
+    "publication_year": 1942,
+    "annotation": "Humoristický román o svérázném sluhovi Saturninovi, který vnáší chaos a dobrodružství do života svého pána.",
+    "rating": 5
+  },
+  {
+    "title": "Osudy dobrého vojáka Švejka za světové války",
+    "author": "Jaroslav Hašek",
+    "publication_year": 1921,
+    "annotation": "Satirický román sledující putování Josefa Švejka, který s předstíraným idiotstvím odhaluje absurditu války a rakousko-uherské byrokracie.",
+    "rating": 5
+  },
+  {
+    "title": "Malý princ",
+    "author": "Antoine de Saint-Exupéry",
+    "publication_year": 1943,
+    "annotation": "Filozofická pohádka o přátelství, lásce a ztrátě, vyprávěná z pohledu pilota, který se v poušti setká s mladým princem z jiné planety.",
+    "rating": 5
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "publication_year": 1949,
+    "annotation": "Dystopický román o totalitní společnosti, kde Velký bratr sleduje každý váš krok a myšlenky jsou zločinem.",
+    "rating": 5
+  },
+  {
+    "title": "Konec civilizace",
+    "author": "Aldous Huxley",
+    "publication_year": 1932,
+    "annotation": "Dystopická vize budoucnosti, ve které je lidstvo geneticky šlechtěno a udržováno ve stavu umělého štěstí pomocí drog a konzumu.",
+    "rating": 4
+  },
+  {
+    "title": "Proměna",
+    "author": "Franz Kafka",
+    "publication_year": 1915,
+    "annotation": "Existenciální povídka o obchodním cestujícím Řehoři Samsovi, který se jednoho rána probudí proměněný v obří hmyz.",
+    "rating": 4
+  },
+  {
+    "title": "Válka s Mloky",
+    "author": "Karel Čapek",
+    "publication_year": 1936,
+    "annotation": "Alegorický a satirický sci-fi román o objevu inteligentních mloků, které lidstvo nejprve zneužívá a kteří se nakonec stanou hrozbou pro celou civilizaci.",
+    "rating": 5
+  },
+  {
+    "title": "451 stupňů Fahrenheita",
+    "author": "Ray Bradbury",
+    "publication_year": 1953,
+    "annotation": "Příběh o budoucnosti, kde jsou knihy zakázány a hasiči je pálí místo toho, aby hasili požáry. Hlavní hrdina začne pochybovat o smyslu své práce.",
+    "rating": 4
+  },
+  {
+    "title": "Stopařův průvodce po Galaxii",
+    "author": "Douglas Adams",
+    "publication_year": 1979,
+    "annotation": "Kultovní sci-fi komedie o Pozemšťanovi Arthuru Dentovi, který je zachráněn před zničením Země a vydává se na absurdní cestu vesmírem.",
+    "rating": 5
+  },
+  {
+    "title": "Krysař",
+    "author": "Viktor Dyk",
+    "publication_year": 1915,
+    "annotation": "Novoklasicistní novela inspirovaná staroněmeckou pověstí o tajemném krysaři, který přichází do města Hammeln, aby ho zbavil krys.",
+    "rating": 4
   }
 ]

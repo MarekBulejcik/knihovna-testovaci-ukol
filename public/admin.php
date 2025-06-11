@@ -10,50 +10,65 @@ $action = $_GET['action'] ?? $_POST['action'] ?? null;
 $errors = [];
 $successMessage = '';
 
-if ($action === 'add_book' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['is_logged_in'])) {
-    // 1. ZISK DAT Z FORMULÁŘE
-    $newBook = [
-        'title' => $_POST['title'] ?? '',
-        'author' => $_POST['author'] ?? '',
-        'publication_year' => $_POST['publication_year'] ?? '',
-        'annotation' => $_POST['annotation'] ?? '',
-        'rating' => $_POST['rating'] ?? ''
-    ];
+// NAHRÁVÁNÍ JSON SOUBORŮ S DATY
+if ($action === 'import_upload' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['is_logged_in'])) {
+    if (isset($_FILES['json_file']) && $_FILES['json_file']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp_path = $_FILES['json_file']['tmp_name'];
+        $file_name = $_FILES['json_file']['name'];
+        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-    // 2. VALIDACE
-    if (empty($newBook['title'])) {
-        $errors[] = 'Název je povinný.';
-    }
-    if (empty($newBook['author'])) {
-        $errors[] = 'Autor je povinný.';
-    }
-    if (!empty($newBook['publication_year']) && !filter_var($newBook['publication_year'], FILTER_VALIDATE_INT)) {
-        $errors[] = 'Rok vydání musí být platné číslo.';
-    }
-    if (!empty($newBook['rating']) && !filter_var($newBook['rating'], FILTER_VALIDATE_INT, ["options" => ["min_range" => 1, "max_range" => 5]])) {
-        $errors[] = 'Hodnocení musí být číslo od 1 do 5.';
-    }
+        if ($file_extension === 'json') {
+            $json_content = file_get_contents($file_tmp_path);
+            $books = json_decode($json_content, true);
 
-    // 3. ULOŽENÍ DO DATABÁZE POKUD NEJSOU CHYBY
-    if (empty($errors)) {
-        $db->addBook($newBook);
-        $successMessage = 'Kniha byla úspěšně přidána!';
-        // RESET TEXTU V INPUTECH
-        $_POST = []; 
+            // KONTROLA JSON SOUBORU
+            if (is_array($books)) {
+                $imported_count = 0;
+                foreach ($books as $book) {
+                    // PŘIDÁVÁM DATA KNIH DO DATABÁZE (FUNKCE ADDBOOK SI OŠETŘÍ DUPLICITNÍ KNIHY)
+                    $db->addBook($book);
+                    $imported_count++;
+                }
+                $successMessage = "Bylo úspěšně naimportováno " . $imported_count . " knih.";
+            } else {
+                $errors[] = 'Soubor neobsahuje validní JSON formát.';
+            }
+        } else {
+            $errors[] = 'Prosím, nahrajte soubor s koncovkou .json';
+        }
+    } else {
+        // ZPRACOVÁNÍ CHYB
+        switch ($_FILES['json_file']['error']) {
+            case UPLOAD_ERR_NO_FILE:
+                $errors[] = 'Nebyl vybrán žádný soubor.';
+                break;
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                $errors[] = 'Soubor je příliš velký.';
+                break;
+            default:
+                $errors[] = 'Při nahrávání souboru došlo k chybě.';
+        }
     }
 }
 
-// ZPRACOVÁNÍ IMPORTU SOUBORU (books.json)
-if ($action === 'import' && isset($_SESSION['is_logged_in'])) {
-    $json_file = file_get_contents(__DIR__ . '/../books.json');
-    $books = json_decode($json_file, true);
+// ZPRACOVÁNÍ MANUÁLNÍHO PŘIDÁNÍ KNIH
+if ($action === 'add_book' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['is_logged_in'])) {
+    $newBook = [
+        'title' => $_POST['title'] ?? '', 'author' => $_POST['author'] ?? '',
+        'publication_year' => $_POST['publication_year'] ?? '', 'annotation' => $_POST['annotation'] ?? '',
+        'rating' => $_POST['rating'] ?? ''
+    ];
+    if (empty($newBook['title'])) { $errors[] = 'Název je povinný.'; }
+    if (empty($newBook['author'])) { $errors[] = 'Autor je povinný.'; }
+    if (!empty($newBook['publication_year']) && !filter_var($newBook['publication_year'], FILTER_VALIDATE_INT)) { $errors[] = 'Rok vydání musí být platné číslo.'; }
+    if (!empty($newBook['rating']) && !filter_var($newBook['rating'], FILTER_VALIDATE_INT, ["options" => ["min_range" => 1, "max_range" => 5]])) { $errors[] = 'Hodnocení musí být číslo od 1 do 5.'; }
 
-    foreach ($books as $book) {
-        $db->addBook($book);
+    if (empty($errors)) {
+        $db->addBook($newBook);
+        $successMessage = 'Kniha byla úspěšně přidána!';
+        $_POST = []; 
     }
-
-    header('Location: admin.php?import_success=1');
-    exit;
 }
 
 // ZPRACOVÁNÍ ODHLÁŠENÍ
@@ -64,17 +79,16 @@ if ($action === 'logout') {
 }
 
 // ZPRACOVÁNÍ PŘIHLÁŠENÍ
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
-    if ($_POST['password'] === ADMIN_PASSWORD) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !in_array($action, ['add_book', 'import_upload'])) {
+    if (isset($_POST['password']) && $_POST['password'] === ADMIN_PASSWORD) {
         $_SESSION['is_logged_in'] = true;
         header('Location: admin.php');
         exit;
     } else {
-        $error = 'Nesprávné heslo!';
+        $login_error = 'Nesprávné heslo!';
     }
 }
 
-// KONTROLA STATUSU PŘIHLÁŠENÍ UŽIVATELE
 $isLoggedIn = isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'];
 
 ?>
@@ -85,37 +99,21 @@ $isLoggedIn = isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrace</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.25rem; }
-        .form-group input, .form-group textarea { width: 100%; max-width: 400px; padding: 0.5rem; }
-        .error { color: red; border: 1px solid red; padding: 1rem; margin-bottom: 1rem; }
-        .success { color: green; border: 1px solid green; padding: 1rem; margin-bottom: 1rem; }
-    </style>
 </head>
 <body>
     <div class="container">
         <h1>Administrace</h1>
 
-        <!-- POKUD JE UŽIVATEL PŘIHLÁŠEN -->
         <?php if ($isLoggedIn): ?>
             <p>Jste přihlášen(a). <a href="admin.php?action=logout">Odhlásit se</a> | <a href="index.php">Zpět na katalog</a></p>
             <hr>
 
-            <!-- ZOBRAZOVÁNÍ OZNÁMENÍ ÚSPĚŠNÉHO IMPORTU KNIH -->
-            <?php if (isset($_GET['import_success'])): ?>
-                <div class="success">Knihy byly úspěšně naimportovány!</div>
-            <?php endif; ?>
-
-            <!-- ZOBRAZOVÁNÍ POTVRZENÍ -->
             <?php if ($successMessage): ?>
                 <div class="success"><?php echo $successMessage; ?></div>
             <?php endif; ?>
-
-            <!-- ZOBRAZOVÁNÍ CHYB -->
             <?php if (!empty($errors)): ?>
                 <div class="error">
-                    <strong>Chyba při ukládání:</strong>
+                    <strong>Chyba:</strong>
                     <ul>
                         <?php foreach ($errors as $error): ?>
                             <li><?php echo $error; ?></li>
@@ -124,6 +122,18 @@ $isLoggedIn = isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'];
                 </div>
             <?php endif; ?>
 
+            <h2>Importovat knihy z JSON souboru</h2>
+            <form method="POST" action="admin.php" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="import_upload">
+                <div class="form-group">
+                    <label for="json_file">Vyberte JSON soubor</label>
+                    <input type="file" id="json_file" name="json_file" accept=".json,application/json">
+                </div>
+                <button type="submit">Importovat</button>
+            </form>
+
+            <hr>
+            
             <h2>Přidat novou knihu</h2>
             <form method="POST" action="admin.php">
                 <input type="hidden" name="action" value="add_book">
@@ -150,11 +160,6 @@ $isLoggedIn = isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'];
                 <button type="submit">Přidat knihu</button>
             </form>
 
-            <hr>
-            <h2>Další akce</h2>
-            <a href="admin.php?action=import">Importovat knihy z JSON</a>
-
-        <!-- POKUD JE UŽIVATEL NEPŘIHLÁŠEN -->
         <?php else: ?>
             <form method="POST" action="admin.php">
                 <label for="password">Heslo:</label><br>

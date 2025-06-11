@@ -32,4 +32,26 @@ class Database {
         $stmt = $this->pdo->query("SELECT id, title, author, publication_year FROM books ORDER BY author, title");
         return $stmt->fetchAll();
     }
+
+    public function addBook(array $book): void {
+        $stmt = $this->pdo->prepare("SELECT id FROM books WHERE title = ? AND author = ?");
+        $stmt->execute([$book['title'], $book['author']]);
+        // Pokud kniha existuje, tak ji nepřidáme znovu do databáze
+        if ($stmt->fetch()) {
+            return;
+        }
+
+        $sql = "INSERT INTO books (title, author, publication_year, annotation, rating) 
+                VALUES (:title, :author, :publication_year, :annotation, :rating)";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            ':title' => $book['title'],
+            ':author' => $book['author'],
+            ':publication_year' => $book['publication_year'],
+            ':annotation' => $book['annotation'],
+            ':rating' => $book['rating']
+        ]);
+    }
 }

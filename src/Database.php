@@ -54,4 +54,10 @@ class Database {
             ':rating' => $book['rating']
         ]);
     }
+
+    public function getBookById(int $id): array|false {
+        $stmt = $this->pdo->prepare("SELECT * FROM books WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
 }

@@ -1,0 +1,23 @@
+[
+  {
+    "title": "R.U.R.",
+    "author": "Karel Čapek",
+    "publication_year": 1920,
+    "annotation": "Kolektivní drama o vzpouře robotů.",
+    "rating": 5
+  },
+  {
+    "title": "Bílá nemoc",
+    "author": "Karel Čapek",
+    "publication_year": 1937,
+    "annotation": "Drama o třech dějstvích varující před nastupujícím fašismem.",
+    "rating": 5
+  },
+  {
+    "title": "Babička",
+    "author": "Božena Němcová",
+    "publication_year": 1855,
+    "annotation": "Vzpomínková próza zachycující autorčiny dětské vzpomínky.",
+    "rating": 4
+  }
+]
